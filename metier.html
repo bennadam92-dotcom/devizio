@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devizio — Logiciel de devis &amp; factures</title>
+  <meta name="description" content="Logiciel de devis et factures avec prestations pré-remplies pour votre métier. Devis → facture en 1 clic. Essai gratuit 30 jours, sans carte.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%234f46e5'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='white' font-family='Arial'%3E%F0%9F%A7%BE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="index.html" class="brand"><span class="logo-mark">🧾</span> Devizio</a>
+      <button class="nav-toggle" aria-label="Menu">☰</button>
+      <nav class="nav">
+        <a href="index.html#metiers">Autres métiers</a>
+        <a href="index.html#tarifs">Tarifs</a>
+        <a href="#" id="nav-cta" class="btn-nav">S'inscrire</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow" id="eyebrow">🧾 Spécial métier</span>
+      <h1 id="hero-title">Devis &amp; factures</h1>
+      <p class="lead" id="hero-sub">Vos prestations pré-remplies, du devis à la facture.</p>
+      <div class="cta-row">
+        <a href="#" id="hero-cta" class="btn btn-primary" style="font-size:17px;padding:14px 28px">Créer mon premier devis gratuitement →</a>
+      </div>
+      <div class="trust">
+        <span><span class="ok">✓</span> Essai gratuit 30 jours</span>
+        <span><span class="ok">✓</span> Sans carte bancaire</span>
+        <span><span class="ok">✓</span> Prêt en 2 minutes</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <div class="section-head"><h2 id="presets-title">Vos prestations, déjà prêtes</h2><p>Plus besoin de tout retaper à chaque devis.</p></div>
+      <div id="preset-chips" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:760px;margin:0 auto"></div>
+    </div>
+  </section>
+
+  <section class="block alt">
+    <div class="wrap">
+      <div class="section-head"><h2>3 étapes, et vous facturez</h2></div>
+      <div class="cards">
+        <div class="card"><div class="ico">1</div><h3>Ajoutez votre client</h3><p>Une fois, et il est enregistré pour la prochaine fois.</p></div>
+        <div class="card"><div class="ico">2</div><h3>Composez le devis</h3><p>Vos prestations pré-remplies, les quantités, la TVA. Le total se calcule seul.</p></div>
+        <div class="card"><div class="ico">3</div><h3>Envoyez &amp; encaissez</h3><p>Téléchargez le PDF, envoyez-le, suivez le paiement.</p></div>
+      </div>
+      <div style="text-align:center;margin-top:34px"><a href="#" id="mid-cta" class="btn btn-primary" style="font-size:17px;padding:14px 28px">Essayer gratuitement →</a></div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="wrap">
+      <h2>Votre prochain devis, prêt en 2 minutes</h2>
+      <p>Gratuit, sans carte, sans installation.</p>
+      <a href="#" id="bottom-cta" class="btn">Créer mon devis →</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-bottom" style="border:0">
+        <span>© <span id="year"></span> Devizio. Tous droits réservés.</span>
+        <span><a href="index.html">Retour à l'accueil</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/trades.js"></script>
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    var t = document.querySelector(".nav-toggle"); if (t) t.addEventListener("click", function(){ document.querySelector(".nav").classList.toggle("open"); });
+
+    var m = new URLSearchParams(location.search).get("m");
+    var trade = window.TRADES && window.TRADES[m];
+    if (!trade) { location.replace("index.html"); }
+    else {
+      document.title = "Devizio — " + trade.tagline;
+      document.getElementById("eyebrow").textContent = trade.emoji + " Spécial " + trade.name.toLowerCase();
+      document.getElementById("hero-title").innerHTML = trade.tagline.replace(trade.name.toLowerCase() + "s", '<span class="grad">' + trade.name.toLowerCase() + 's</span>');
+      document.getElementById("hero-sub").textContent = trade.sub;
+      document.getElementById("presets-title").textContent = "Vos prestations de " + trade.name.toLowerCase() + ", déjà prêtes";
+      var chips = document.getElementById("preset-chips");
+      trade.presets.slice(0, 12).forEach(function(p){
+        var s = document.createElement("span");
+        s.textContent = p;
+        s.style.cssText = "background:var(--green-soft);color:var(--green-dark);border:1px solid var(--border);padding:8px 14px;border-radius:999px;font-size:14px;font-weight:600";
+        chips.appendChild(s);
+      });
+      // CTA : mémorise le métier puis va à l'app
+      function goApp(e){ e.preventDefault(); try{ localStorage.setItem("devizio_trade", m); }catch(err){} location.href = "app.html"; }
+      ["hero-cta","mid-cta","bottom-cta","nav-cta"].forEach(function(id){ var el=document.getElementById(id); if(el) el.addEventListener("click", goApp); });
+    }
+    // suivi entonnoir (une visite du site)
+    try { fetch("https://piscineo-api.onrender.com/api/track", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({event:"home"}), keepalive:true }); } catch(e){}
+  </script>
+</body>
+</html>
