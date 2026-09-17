@@ -19,7 +19,7 @@
     return {
       settings: {
         company: { nom: "", adresse: "", cp: "", ville: "", siret: "", tel: "", email: "", tvaNum: "", logo: "" },
-        tva: 20, mentions: "", devisCounter: 1, factureCounter: 1, isPro: false, franchiseTva: false, trade: null
+        tva: 20, mentions: "", devisCounter: 1, factureCounter: 1, isPro: false, franchiseTva: false, trade: null, seeded: false
       },
       clients: [],
       docs: []
@@ -133,7 +133,7 @@
     var c = clientById(d.clientId);
     var t = computeTotals(d);
     return '<tr style="cursor:pointer" onclick="location.hash=\'#doc/' + d.id + '\'">' +
-      '<td><strong>' + esc(d.number) + '</strong></td>' +
+      '<td><strong>' + esc(d.number) + '</strong>' + (d._example ? ' <span style="font-size:11px;color:var(--text-soft);font-weight:600">· exemple</span>' : '') + '</td>' +
       '<td>' + esc(c ? c.nom : "—") + '</td>' +
       '<td>' + frDate(d.date) + '</td>' +
       '<td>' + eur(t.ttc) + '</td>' +
@@ -450,8 +450,26 @@
     });
   }
 
+  /* ---------- Exemples (au 1er lancement) ---------- */
+  function seedExamples() {
+    if (db.settings.seeded) return;
+    if (db.docs.length || db.clients.length) { db.settings.seeded = true; save(); return; }
+    var p = currentPresets();
+    var cid = uid();
+    db.clients.push({ id: cid, nom: "Client Exemple", email: "client@exemple.fr", tel: "06 12 34 56 78", adresse: "10 rue des Lilas", cp: "75001", ville: "Paris" });
+    function ln(desig, qty, unit, pu) { return { designation: desig, qty: qty, unit: unit, pu: pu, tva: db.settings.tva }; }
+    function lines() { return [ln(p[0] || "Prestation", 1, "forfait", 350), ln(p[1] || "Main d'œuvre", 4, "h", 45), ln(p[2] || "Fourniture", 2, "u", 60)]; }
+    var today = todayISO();
+    db.docs.push({ id: uid(), type: "devis", number: nextNumber("devis"), clientId: cid, date: today, validity: addDays(today, 30), status: "accepte", lines: lines(), remise: 0, notes: "Exemple — vous pouvez le modifier ou le supprimer.", createdAt: Date.now() - 2000, _example: true });
+    db.settings.devisCounter++;
+    db.docs.push({ id: uid(), type: "facture", number: nextNumber("facture"), clientId: cid, date: today, validity: addDays(today, 30), status: "paye", lines: lines(), remise: 0, notes: "Exemple — vous pouvez la modifier ou la supprimer.", createdAt: Date.now() - 1000, _example: true });
+    db.settings.factureCounter++;
+    db.settings.seeded = true;
+    save();
+  }
+
   /* ---------- Init ---------- */
-  function boot() { updateProTag(); router(); maybeChooseTrade(); }
+  function boot() { if (LOGGED_IN) seedExamples(); updateProTag(); router(); maybeChooseTrade(); }
   window.addEventListener("hashchange", router);
   document.addEventListener("DOMContentLoaded", boot);
   if (document.readyState !== "loading") boot();
