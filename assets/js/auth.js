@@ -24,7 +24,7 @@
   function screen(html, after) {
     root = document.getElementById("auth-root"); if (!root) return; root.hidden = false;
     root.innerHTML = '<div class="auth-overlay"><div class="auth-card">' +
-      '<div class="auth-logo"><span style="font-size:26px;margin-right:2px">🧾</span><span>Devizio</span></div>' + html + '</div></div>';
+      '<div class="auth-logo"><img src="assets/img/logo.svg" alt="" style="width:30px;height:30px;margin-right:6px"><span>Devizio</span></div>' + html + '</div></div>';
     if (after) after();
   }
 

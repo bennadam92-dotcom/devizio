@@ -1,0 +1,13 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Devizio">
+  <defs>
+    <linearGradient id="dvz" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3aa2ff"/>
+      <stop offset="1" stop-color="#1a56e8"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#dvz)" fill-rule="evenodd" d="
+    M20 12 L54 12 C79 12 89 29 89 50 C89 71 79 88 54 88 L20 88 Z
+    M44 32 L52 32 C64 32 70 40 70 50 C70 60 64 68 52 68 L44 68 Z
+    M27 35 L45 50 L27 65 Z
+  "/>
+</svg>
